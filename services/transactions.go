@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"mongodb/config"
-	"mongodb/models"
+	//"mongodb/models"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	//"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 /*Function name:TranscationContext
@@ -64,7 +64,7 @@ func FetchAggregatedTransactions(){
                 {"_id","$account_id"},
                 {"total_count",bson.D{{"$sum","$transaction_count"}}},
             }}}
-            result,err:=TransactionContext().Aggregate(ctx,mongo.Pipeline{matchStage,groupStage})
+            result,err:=TransactionContext().Aggregate(ctx,mongo.Pipeline{matchStage,groupStage})//pipeline of queries
             if err!=nil{
                 fmt.Println(err.Error())
 
@@ -80,5 +80,17 @@ func FetchAggregatedTransactions(){
                     fmt.Println(string(formatted_data))
                 }
             }
+}
+
+func UpdateTransaction(initialValue int,newValue int)(*mongo.UpdateResult,error){
+    ctx,_:=context.WithTimeout(context.Background(),100*time.Second)
+    filter:=bson.D{{"account_id",initialValue}}
+    update:=bson.D{{"$set",bson.D{{"account_id",newValue}}}}
+    result,err:=TransactionContext().UpdateOne(ctx,filter,update)
+    if err!=nil{
+        fmt.Println(err.Error())
+        return nil,err
+    }
+    return result,nil
 }
 
