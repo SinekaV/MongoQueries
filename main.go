@@ -22,7 +22,7 @@ func main(){
 
 
 	fmt.Println("MongoDB successfully connected...")
-	products,_:=services.FindTrans()
+	products,_:=services.FetchAggregatedTransactions()
 	for _,product:=range products{
 		fmt.Println(product)
 	}
